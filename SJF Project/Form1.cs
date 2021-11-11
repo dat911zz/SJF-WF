@@ -145,8 +145,7 @@ namespace SJF_Project
             public string id;
             public int arrival_time, burst_time, turnaround_time, exit_time, waiting_time;
         }
-        
-
+       
         //====================================================
         //SJF độc quyền
         public static void swap(ref Process a, ref Process b)
@@ -220,55 +219,134 @@ namespace SJF_Project
                 }
             }
         }
+        public static double sumOfTime(Process[] a, int n)
+        {
+            double sum = 0;
+            for (int i = 0; i < n; i++)
+            {
+                sum += a[i].burst_time;
+            }
+            return sum;
+        }
         public void SJF(Process[] a, int n)
         {
             Random rand = new Random();
-            int x, y, z, k = 0, time = 0, i;
+            RGB[] colorProcess = new RGB[100];
+            int xx, yy, zz, i;
             arrangeArrival(a, n);
             completionTime(a, n);
-            for (i = 0; i < n * 50; i += 50)
+
+            for (i = 0; i < n; i++)
             {
                 //Random color 
-                x = rand.Next(50, 255);
-                y = rand.Next(50, 255);
-                z = rand.Next(50, 255);
-                //Drawing 
-                TextBox txb = new TextBox();
-                Font font = new Font("Microsoft Sans Serif", 9f, FontStyle.Regular);
-                txb.Location = new Point(i, 2);
-                txb.Name = string.Format("P{0}", i);
-                txb.Tag = string.Format("[{0}]", i);
-                txb.Multiline = true;
-                txb.Text = " " + a[k].id;
-                txb.Text += "\r\n";
-                txb.Text += "\r\n" + time;
-                txb.Font = font;
-                txb.BackColor = System.Drawing.Color.FromArgb(255, x, y, z);
-                txb.AutoSize = false;
-                txb.ReadOnly = true;
-                txb.Margin = new Padding(0, 0, 0, 0);
-                txb.Size = new Size(50, 50);
-                GanttChartPanel.Controls.Add(txb);
+                xx = rand.Next(50, 255);
+                yy = rand.Next(50, 255);
+                zz = rand.Next(50, 255);
 
-                GanttChartPanel.Refresh();
+                colorProcess[i].x = xx;
+                colorProcess[i].y = yy;
+                colorProcess[i].z = zz;
+            }
 
-                //Count time
-                for (int j = a[k].arrival_time; j < a[k].burst_time + a[k].arrival_time; j++)
+            for (i = 0; i < n; i++)
+            {
+                a[i].turnaround_time = a[i].exit_time - a[i].arrival_time;
+                a[i].waiting_time = a[i].turnaround_time - a[i].burst_time;
+            }
+            int count = 0, remain = 0;
+            Font font = new Font("Microsoft Sans Serif", 9f, FontStyle.Regular);
+            for (i = 0; i < n; i++)
+            {
+
+                TextBox txb1 = new TextBox();
+                if (a[i].burst_time == 1)
                 {
-                    //Sleep for a sec
-                    System.Threading.Thread.Sleep(50);
-                    CountTime.Text = "" + ++time;
+                    txb1.Location = new Point(count * 20, 2);
+                    txb1.Multiline = true;
+                    txb1.Font = font;
+                    txb1.Text = " " + a[i].id;
+                    txb1.Text += "\r\n";
+                    txb1.Text += "\r\n" + count;
+                    txb1.BorderStyle = 0;
+                    txb1.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                    txb1.AutoSize = false;
+                    txb1.ReadOnly = true;
+                    txb1.Margin = new Padding(0, 0, 0, 0);
+                    txb1.Size = new Size(19, 50);
+                    GanttChartPanel.Controls.Add(txb1);
+                    count++;
+                }
+                else
+                {
+                    remain = a[i].burst_time;
+                    txb1.Location = new Point(count * 20, 2);
+                    txb1.Multiline = true;
+                    txb1.Font = font;
+                    txb1.Text = " " + a[i].id;
+                    txb1.Text += "\r\n";
+                    txb1.Text += "\r\n" + count;
+                    txb1.BorderStyle = 0;
+                    txb1.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                    txb1.AutoSize = false;
+                    txb1.ReadOnly = true;
+                    txb1.Margin = new Padding(0, 0, 0, 0);
+                    txb1.Size = new Size(20, 50);
+                    GanttChartPanel.Controls.Add(txb1);
+                    count++;
+                    remain--;
+                }         
+                while (remain != 0)
+                {
+                    if (remain == 1)
+                    {
+                        TextBox txb = new TextBox();
+                        txb.Location = new Point(count * 20, 2);
+                        txb.Multiline = true;
+                        txb.Font = font;
+                        txb.Text = " ";
+                        txb.BorderStyle = 0;
+                        txb.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                        txb.AutoSize = false;
+                        txb.ReadOnly = true;
+                        txb.Margin = new Padding(0, 0, 0, 0);
+                        txb.Size = new Size(19, 50);
+                        GanttChartPanel.Controls.Add(txb);
+                        count++;
+                        remain--;
+                    }
+                    else
+                    {
+                        TextBox txb = new TextBox();
+                        txb.Location = new Point(count * 20, 2);
+                        txb.Multiline = true;
+                        txb.Font = font;
+                        txb.Text = " ";
+                        txb.BorderStyle = 0;
+                        txb.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                        txb.AutoSize = false;
+                        txb.ReadOnly = true;
+                        txb.Margin = new Padding(0, 0, 0, 0);
+                        txb.Size = new Size(20, 50);
+                        GanttChartPanel.Controls.Add(txb);
+                        count++;
+                        remain--;
+                    }
+                    //Count time                
+                    CountTime.Text = "" + count;
                     CountTime.Refresh();
                 }
-                k++;
+                //Count time                
+                CountTime.Text = "" + count;
+                CountTime.Refresh();
             }
+
             sortPID(a, n);
             Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
             for (i = 0; i < n; i++)
             {
                 Console.WriteLine("{0}\t\t{1}\t\t{2}", a[i].id, a[i].waiting_time, a[i].turnaround_time); ;
             }
-            Console.WriteLine("\nAverage waiting time: {0}",averageWaitingTime(a,n));
+            Console.WriteLine("\nAverage waiting time: {0}", averageWaitingTime(a, n));
 
         }
         //====================================================
@@ -282,7 +360,7 @@ namespace SJF_Project
             int xx, yy, zz;
 
             int[] x = new int[100];
-            int i, j, smallest, count = 0, time, end;
+            int i, smallest, count = 0, time, end;
             double avg = 0, tt = 0;
 
             //Define color of Process
@@ -300,7 +378,8 @@ namespace SJF_Project
 
             for (i = 0; i < n; i++) 
                 x[i] = a[i].burst_time;
-
+            //---------------------------
+            //Calulating..
             x[9] = 9999; //Declare Max
             for (time = 0; count != n; time++)
             {
@@ -336,6 +415,7 @@ namespace SJF_Project
                 avg = avg + a[i].waiting_time;
                 tt = tt + a[i].turnaround_time;
             }
+            //---------------------------
             //Drawing...
             label2.Visible = true;
             CountTime.Visible = true;
@@ -347,39 +427,49 @@ namespace SJF_Project
                 
                 if (i == time)
                 {
-                    TextBox txb1 = new TextBox();
-                    txb1.Location = new Point(i * 30, 2);
-                    txb1.Name = string.Format("P{0}", i);
-                    txb1.Tag = string.Format("[{0}]", i);
-                    txb1.Multiline = true;
-                    txb1.Font = font;
-                    txb1.Text = string.Format(" ");
-                    txb1.Text += "\r\n";
-                    txb1.Text += "\r\n" + i;
-                    txb1.BackColor = System.Drawing.Color.FromArgb(255, 60, 90, 190);
-                    txb1.AutoSize = false;
-                    txb1.ReadOnly = true;
-                    txb1.Margin = new Padding(0, 0, 0, 0);
-                    txb1.Size = new Size(30, 50);
-                    GanttChartPanel.Controls.Add(txb1);
-                }
-                else
-                {
                     TextBox txb = new TextBox();
-                    txb.Location = new Point(i * 30, 2);
-                    txb.Name = string.Format("P{0}", i);
-                    txb.Tag = string.Format("[{0}]", i);
+                    txb.Location = new Point(i * 20, 2);
                     txb.Multiline = true;
                     txb.Font = font;
-                    txb.Text = string.Format("P{0}", processGantt[i] + 1);
+                    txb.Text = string.Format(" ");
                     txb.Text += "\r\n";
                     txb.Text += "\r\n" + i;
-                    txb.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                    txb.BorderStyle = 0;
+                    txb.BackColor = System.Drawing.Color.FromArgb(255, 60, 90, 190);
                     txb.AutoSize = false;
                     txb.ReadOnly = true;
                     txb.Margin = new Padding(0, 0, 0, 0);
-                    txb.Size = new Size(30, 50);
+                    txb.Size = new Size(15, 50);
                     GanttChartPanel.Controls.Add(txb);
+                }
+                else
+                {
+                    if (i == 0)
+                    {
+                        drawProcess(processGantt, colorProcess, font, i, i, 20, 50);
+                    }
+                    else
+                    {
+                        if (processGantt[i] != processGantt[i-1])
+                        {
+                            drawProcess(processGantt, colorProcess, font, i, i, 20, 50);
+                        }
+                        else
+                        {
+                            TextBox txb = new TextBox();
+                            txb.Location = new Point(i * 20, 2);
+                            txb.Multiline = true;
+                            txb.Font = font;
+                            txb.Text = string.Format(" ");
+                            txb.BorderStyle = 0;
+                            txb.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+                            txb.AutoSize = false;
+                            txb.ReadOnly = true;
+                            txb.Margin = new Padding(0, 0, 0, 0);
+                            txb.Size = new Size(20, 50);
+                            GanttChartPanel.Controls.Add(txb);
+                        }
+                    }                
                 }
 
                 //Count time                
@@ -394,7 +484,25 @@ namespace SJF_Project
                 Console.WriteLine("{0}\t\t{1}\t\t{2}", a[i].id, a[i].waiting_time, a[i].turnaround_time);
             }
             Console.WriteLine("\nAverage waiting time: {0}", averageWaitingTime(a, n));
-
+        }
+        public void drawProcess(int[] processGantt,RGB[] colorProcess, Font font, int i, int k, int sizex, int sizey)
+        {
+            TextBox txb = new TextBox();
+            txb.Location = new Point(k * 20, 2);
+            txb.Name = string.Format("P{0}", k);
+            txb.Tag = string.Format("[{0}]", k);
+            txb.Multiline = true;
+            txb.BorderStyle = 0;
+            txb.Font = font;
+            txb.Text = string.Format("P{0}", processGantt[i] + 1);
+            txb.Text += "\r\n";
+            txb.Text += "\r\n" + i;
+            txb.BackColor = System.Drawing.Color.FromArgb(255, colorProcess[i].x, colorProcess[i].y, colorProcess[i].z);
+            txb.AutoSize = false;
+            txb.ReadOnly = true;
+            txb.Margin = new Padding(0, 0, 0, 0);
+            txb.Size = new Size(sizex, sizey);
+            GanttChartPanel.Controls.Add(txb);
         }
     }
 }
